@@ -10,18 +10,12 @@ $company = settings_get('company_name', 'Jízdní řád');
 $footer = settings_get('print_footer', '');
 
 $rows = array();
-$total = 0;
-$currencyDefault = settings_get('currency_default', 'CZK');
 
 try {
     $stmt = $pdo->prepare('SELECT r.*, c.name AS client_name, c.phone AS client_phone FROM rides r JOIN clients c ON c.id=r.client_id
                            WHERE r.ride_date = ? AND r.is_active = 1 ORDER BY r.start_time ASC, r.sort ASC, r.id ASC');
     $stmt->execute(array($date));
     $rows = $stmt->fetchAll();
-
-    foreach ($rows as $r) {
-        if ($r['status'] !== 'cancelled') { $total += (int)$r['price_cents']; }
-    }
 } catch (Exception $e) {
     app_log('print_schedule error: '.$e->getMessage());
 }
@@ -37,13 +31,12 @@ $content .= '<div class="text-display"><strong>Datum:</strong> '.h($date).'</div
 $content .= Separator();
 
 $tbl = '<table class="table"><thead><tr>'.
-        '<th>Čas</th><th>Klient</th><th>Telefon</th><th>Trasa</th><th>Cena</th><th>Provedená jízda</th>'.
+        '<th>Čas</th><th>Klient</th><th>Telefon</th><th>Trasa</th><th>Provedená jízda</th>'.
        '</tr></thead><tbody>';
 
 foreach ($rows as $r) {
     $time = h($r['start_time']).($r['end_time']!=='' ? ('–'.h($r['end_time'])) : '');
     $route = h($r['pickup']).($r['dropoff']!=='' ? (' → '.h($r['dropoff'])) : '');
-    $price = cents_to_money((int)$r['price_cents']).' '.h($r['currency']);
     if ($r['status'] === 'planned') { $rideDonePrint = '☐ ANO  ☐ NE'; }
     else if ($r['status'] === 'done') { $rideDonePrint = 'ANO'; }
     else { $rideDonePrint = 'NE'; }
@@ -53,19 +46,16 @@ foreach ($rows as $r) {
       '<td>'.h($r['client_name']).'</td>'.
       '<td>'.h($r['client_phone']).'</td>'.
       '<td>'.$route.'</td>'.
-      '<td>'.h($price).'</td>'.
       '<td>'.h($rideDonePrint).'</td>'.
     '</tr>';
 }
 
 if (count($rows) === 0) {
-    $tbl .= '<tr><td colspan="6">Žádné jízdy.</td></tr>';
+    $tbl .= '<tr><td colspan="5">Žádné jízdy.</td></tr>';
 }
 $tbl .= '</tbody></table>';
 
 $content .= $tbl;
-$content .= Separator();
-$content .= '<div class="text-display"><strong>Celkem (bez zrušených):</strong> '.h(cents_to_money($total)).' '.h($currencyDefault).'</div>';
 if ($footer !== '') {
     $content .= Separator().'<div class="text-display">'.nl2br(h($footer)).'</div>';
 }
