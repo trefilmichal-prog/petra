@@ -189,14 +189,12 @@ try {
 $tbl = '<div class="print-hide">'.ActionRow('<a class="btn primary" href="index.php?p=clients&a=new">+ Nový klient</a>').'</div>'.Separator();
 
 $tbl .= '<table class="table"><thead><tr>'.
-        '<th>Řazení</th><th>Klient</th><th>Kontakt</th><th>Výchozí cena</th><th>Stav</th><th>Akce</th>'.
+        '<th>Řazení</th><th>Klient</th><th>Kontakt</th><th>Adresa</th><th>Stav</th><th>Akce</th>'.
         '</tr></thead><tbody>';
 
 foreach ($rows as $r) {
     $cid = (int)$r['id'];
     $status = ((int)$r['is_active']===1) ? 'Aktivní' : 'Neaktivní';
-    $price = cents_to_money((int)$r['default_price_cents']).' '.h($r['currency']);
-
     $tbl .= '<tr>'.
         '<td>'.h((string)(int)$r['sort']).'<div style="margin-top:6px;">'.
             '<form method="post" action="index.php?p=clients" style="display:inline">'.
@@ -216,7 +214,7 @@ foreach ($rows as $r) {
         '</div></td>'.
         '<td><strong>'.h($r['name']).'</strong><div class="text-display">'.nl2br(h($r['note'])).'</div></td>'.
         '<td>'.h($r['phone']).'<br>'.h($r['email']).'</td>'.
-        '<td>'.h($price).'</td>'.
+        '<td>'.h($r['address']).'</td>'.
         '<td>'.h($status).'</td>'.
         '<td class="print-hide">'.
             '<a class="btn small" href="index.php?p=clients&a=edit&id='.$cid.'">Upravit</a> '.
