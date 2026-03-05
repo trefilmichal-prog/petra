@@ -37,17 +37,16 @@ $content .= '<div class="text-display"><strong>Datum:</strong> '.h($date).'</div
 $content .= Separator();
 
 $tbl = '<table class="table"><thead><tr>'.
-        '<th>Čas</th><th>Klient</th><th>Telefon</th><th>Trasa</th><th>Cena</th><th>Status</th>'.
+        '<th>Čas</th><th>Klient</th><th>Telefon</th><th>Trasa</th><th>Cena</th><th>Provedená jízda</th>'.
        '</tr></thead><tbody>';
 
 foreach ($rows as $r) {
     $time = h($r['start_time']).($r['end_time']!=='' ? ('–'.h($r['end_time'])) : '');
     $route = h($r['pickup']).($r['dropoff']!=='' ? (' → '.h($r['dropoff'])) : '');
     $price = cents_to_money((int)$r['price_cents']).' '.h($r['currency']);
-    $status = $r['status'];
-    if ($status === 'planned') { $statusLbl = 'Plánováno'; }
-    else if ($status === 'done') { $statusLbl = 'Dokončeno'; }
-    else { $statusLbl = 'Zrušeno'; }
+    if ($r['status'] === 'planned') { $rideDonePrint = '☐ ANO  ☐ NE'; }
+    else if ($r['status'] === 'done') { $rideDonePrint = 'ANO'; }
+    else { $rideDonePrint = 'NE'; }
 
     $tbl .= '<tr>'.
       '<td><strong>'.$time.'</strong></td>'.
@@ -55,7 +54,7 @@ foreach ($rows as $r) {
       '<td>'.h($r['client_phone']).'</td>'.
       '<td>'.$route.'</td>'.
       '<td>'.h($price).'</td>'.
-      '<td>'.h($statusLbl).'</td>'.
+      '<td>'.h($rideDonePrint).'</td>'.
     '</tr>';
 }
 
