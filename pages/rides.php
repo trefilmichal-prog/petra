@@ -175,7 +175,8 @@ if ($action === 'edit' || $action === 'new') {
         InputHidden('id', (string)(int)$ride['id']).
         '<div class="grid">'.
           '<div class="field"><label>Datum</label><input type="date" name="ride_date" value="'.h($ride['ride_date']).'" required></div>'.
-          '<div class="field"><label>Klient</label>'.Select('client_id', $opts, (string)(int)$ride['client_id'], array('required'=>'required')).'</div>'.
+          '<div class="field"><label>Klient</label>'.Select('client_id', $opts, (string)(int)$ride['client_id'], array('required'=>'required', 'id'=>'client_id_select')).'</div>'.
+          '<div class="field"><label>Hledat klienta</label><input type="text" id="client_search" placeholder="Zadejte část jména nebo příjmení"></div>'.
           '<div class="field"><label>Čas začátku</label><input type="text" name="start_time" value="'.h($ride['start_time']).'" placeholder="HH:MM" required></div>'.
           '<div class="field"><label>Čas konce</label><input type="text" name="end_time" value="'.h($ride['end_time']).'" placeholder="HH:MM"></div>'.
           '<div class="field"><label>Nástup</label><input type="text" name="pickup" value="'.h($ride['pickup']).'"></div>'.
@@ -187,6 +188,40 @@ if ($action === 'edit' || $action === 'new') {
           '<div class="field"><label>Aktivní</label><div style="padding:10px 0;"><input type="checkbox" name="is_active" value="1"'.$checked.'> <span class="text-display" style="display:inline;">Zobrazovat</span></div></div>'.
           '<div class="field" style="grid-column:1/-1;"><label>Poznámka</label><textarea name="note">'.h($ride['note']).'</textarea></div>'.
         '</div>'.
+        '<script type="text/javascript">(function(){'
+            .'var init=function(){'
+                .'var searchInput=document.getElementById("client_search");'
+                .'var clientSelect=document.getElementById("client_id_select");'
+                .'if(!searchInput||!clientSelect){return;}'
+                .'var allOptions=[];'
+                .'var i;'
+                .'for(i=0;i<clientSelect.options.length;i++){'
+                    .'allOptions.push({value:clientSelect.options[i].value,text:clientSelect.options[i].text});'
+                .'}'
+                .'var rebuild=function(){'
+                    .'var selectedValue=clientSelect.value;'
+                    .'var term=(searchInput.value||"").toLowerCase();'
+                    .'while(clientSelect.options.length>0){clientSelect.remove(0);}'
+                    .'for(i=0;i<allOptions.length;i++){'
+                        .'var optionText=allOptions[i].text||"";'
+                        .'if(term===""||optionText.toLowerCase().indexOf(term)!==-1){'
+                            .'clientSelect.options[clientSelect.options.length]=new Option(allOptions[i].text,allOptions[i].value);'
+                        .'}'
+                    .'}'
+                    .'for(i=0;i<clientSelect.options.length;i++){'
+                        .'if(clientSelect.options[i].value===selectedValue){'
+                            .'clientSelect.options[i].selected=true;'
+                            .'break;'
+                        .'}'
+                    .'}'
+                .'};'
+                .'if(searchInput.addEventListener){searchInput.addEventListener("input",rebuild,false);searchInput.addEventListener("keyup",rebuild,false);}'
+                .'else if(searchInput.attachEvent){searchInput.attachEvent("onkeyup",rebuild);}'
+            .'};'
+            .'if(document.addEventListener){document.addEventListener("DOMContentLoaded",init,false);}'
+            .'else if(window.attachEvent){window.attachEvent("onload",init);}'
+            .'else{window.onload=init;}'
+        .'})();</script>'.
         Separator().
         ActionRow(
             Button('Uložit', 'submit', '', '', 'primary', array()).
