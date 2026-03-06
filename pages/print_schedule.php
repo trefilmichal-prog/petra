@@ -12,7 +12,7 @@ $footer = settings_get('print_footer', '');
 $rows = array();
 
 try {
-    $stmt = $pdo->prepare('SELECT r.*, c.name AS client_name, c.phone AS client_phone FROM rides r JOIN clients c ON c.id=r.client_id
+    $stmt = $pdo->prepare('SELECT r.*, c.name AS client_name, c.phone AS client_phone, c.address AS client_address FROM rides r JOIN clients c ON c.id=r.client_id
                            WHERE r.ride_date = ? AND r.is_active = 1 ORDER BY r.start_time ASC, r.sort ASC, r.id ASC');
     $stmt->execute(array($date));
     $rows = $stmt->fetchAll();
@@ -31,7 +31,7 @@ $content .= '<div class="text-display"><strong>Datum:</strong> '.h($date).'</div
 $content .= Separator();
 
 $tbl = '<table class="table"><thead><tr>'.
-        '<th>Čas</th><th>Klient</th><th>Telefon</th><th>Trasa</th><th>Provedená jízda</th>'.
+        '<th>Čas</th><th>Klient</th><th>Telefon</th><th>Adresa bydliště</th><th>Trasa</th><th>Provedená jízda</th>'.
        '</tr></thead><tbody>';
 
 foreach ($rows as $r) {
@@ -45,13 +45,14 @@ foreach ($rows as $r) {
       '<td><strong>'.$time.'</strong></td>'.
       '<td>'.h($r['client_name']).'</td>'.
       '<td>'.h($r['client_phone']).'</td>'.
+      '<td>'.h($r['client_address']).'</td>'.
       '<td>'.$route.'</td>'.
       '<td>'.h($rideDonePrint).'</td>'.
     '</tr>';
 }
 
 if (count($rows) === 0) {
-    $tbl .= '<tr><td colspan="5">Žádné jízdy.</td></tr>';
+    $tbl .= '<tr><td colspan="6">Žádné jízdy.</td></tr>';
 }
 $tbl .= '</tbody></table>';
 
