@@ -33,12 +33,12 @@ $content .= '<div class="grid">'.
     '<div class="lv-title" style="font-size:16px;">Tisk jízdního řádu (den)</div>'.
     '<div class="text-display">Vytiskne přehled jízd pro vybraný den.</div>'.
     Separator().
-    '<form method="get" action="index.php" class="print-hide">'.
+    '<form method="get" action="index.php" class="print-hide" target="_blank">'.
       InputHidden('p','summaries').
       '<div class="action-row">'.
         '<div class="field" style="min-width:220px;"><label>Datum</label><input type="date" name="date" value="'.h($date).'"></div>'.
-        '<a class="btn primary" target="_blank" href="index.php?p=print_schedule&date='.h($date).'">Tisk jízdního řádu</a>'.
-        '<a class="btn" target="_blank" href="index.php?p=print_summary_day&date='.h($date).'">Tisk souhrnu dne</a>'.
+        '<button class="btn primary" type="submit" formaction="index.php?p=print_schedule">Tisk jízdního řádu</button>'.
+        '<button class="btn" type="submit" formaction="index.php?p=print_summary_day">Tisk souhrnu dne</button>'.
       '</div>'.
     '</form>'.
   '</div>'.
@@ -46,12 +46,12 @@ $content .= '<div class="grid">'.
     '<div class="lv-title" style="font-size:16px;">Souhrn období</div>'.
     '<div class="text-display">Souhrn tržeb a jízd podle klienta za vybrané období.</div>'.
     Separator().
-    '<form method="get" action="index.php" class="print-hide">'.
+    '<form method="get" action="index.php" class="print-hide" onsubmit="if(this.action.indexOf(\'print_summary_range\') !== -1){var from=this.from.value;var to=this.to.value;if(from && to && from > to){alert(\'Datum Od nesmí být později než Do.\');return false;}}return true;">'.
       InputHidden('p','summaries').
       '<div class="action-row">'.
         '<div class="field" style="min-width:200px;"><label>Od</label><input type="date" name="from" value="'.h($from).'"></div>'.
         '<div class="field" style="min-width:200px;"><label>Do</label><input type="date" name="to" value="'.h($to).'"></div>'.
-        '<a class="btn primary" target="_blank" href="index.php?p=print_summary_range&from='.h($from).'&to='.h($to).'">Tisk souhrnu období</a>'.
+        '<button class="btn primary" type="submit" formaction="index.php?p=print_summary_range" formtarget="_blank">Tisk souhrnu období</button>'.
       '</div>'.
     '</form>'.
   '</div>'.
