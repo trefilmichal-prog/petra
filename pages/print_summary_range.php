@@ -45,31 +45,9 @@ $navItems = array(
 
 $content = '';
 $content .= '<div class="grid">'.
-  '<div class="kpi"><div class="k">Období</div><div class="v">'.h($from).' – '.h($to).'</div></div>'.
   '<div class="kpi"><div class="k">Počet jízd</div><div class="v">'.h((string)$totalRides).'</div></div>'.
   '<div class="kpi"><div class="k">Tržby</div><div class="v">'.h(cents_to_money($totalRevenue)).' '.h($currencyDefault).'</div></div>'.
-  '<div class="kpi"><div class="k">Poznámka</div><div class="v">Bez zrušených jízd</div></div>'.
 '</div>';
-
-$content .= Separator();
-
-$tbl = '<table class="table"><thead><tr>'.
-        '<th>Klient</th><th>Počet jízd</th><th>Tržby</th>'.
-       '</tr></thead><tbody>';
-
-foreach ($rows as $r) {
-    $tbl .= '<tr>'.
-      '<td>'.h($r['client_name']).'</td>'.
-      '<td>'.h((string)(int)$r['rides_count']).'</td>'.
-      '<td>'.h(cents_to_money((int)$r['revenue_cents'])).' '.h($currencyDefault).'</td>'.
-    '</tr>';
-}
-if (count($rows) === 0) {
-    $tbl .= '<tr><td colspan="3">Žádná data.</td></tr>';
-}
-$tbl .= '</tbody></table>';
-
-$content .= $tbl;
 if ($footer !== '') {
     $content .= Separator().'<div class="text-display">'.nl2br(h($footer)).'</div>';
 }
