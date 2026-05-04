@@ -18,7 +18,7 @@ $totalRides = 0;
 try {
     $stmt = $pdo->prepare('
         SELECT c.id AS client_id, c.name AS client_name,
-               COUNT(r.id) AS rides_count,
+               SUM(CASE WHEN r.id IS NULL OR r.status="cancelled" THEN 0 ELSE 1 END) AS rides_count,
                COALESCE(SUM(CASE WHEN r.status="cancelled" THEN 0 ELSE r.price_cents END),0) AS revenue_cents
         FROM clients c
         LEFT JOIN rides r ON r.client_id=c.id AND r.ride_date BETWEEN ? AND ? AND r.is_active=1
