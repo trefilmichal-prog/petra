@@ -31,6 +31,12 @@ if ($from === null || $to === null) {
     exit;
 }
 
+if ($from > $to) {
+    flash_set('error', 'Datum Od nesmí být později než Do.');
+    header('Location: index.php?p=summaries&from='.urlencode($from).'&to='.urlencode($to));
+    exit;
+}
+
 $company = settings_get('company_name', 'Jízdní řád');
 $footer = settings_get('print_footer', '');
 $currencyDefault = settings_get('currency_default', 'CZK');
