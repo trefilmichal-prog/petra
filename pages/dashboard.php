@@ -19,6 +19,12 @@ $navItems = array(
 
 $today = date('Y-m-d');
 $selectedDate = isset($_GET['date']) && validate_date($_GET['date']) ? $_GET['date'] : $today;
+$fromDate = isset($_GET['from']) && validate_date($_GET['from']) ? $_GET['from'] : date('Y-m-01');
+$toDate = isset($_GET['to']) && validate_date($_GET['to']) ? $_GET['to'] : $today;
+
+if ($fromDate > $toDate) {
+    $fromDate = $toDate;
+}
 
 $pdo = db();
 $kpi1 = 0; $kpi2 = 0; $kpi3 = 0;
@@ -48,9 +54,12 @@ $html .= Container(
       InputHidden('p', 'dashboard').
       '<div class="action-row">'.
         '<div class="field" style="min-width:220px;"><label>Datum</label><input type="date" name="date" value="'.h($selectedDate).'"></div>'.
+        '<div class="field" style="min-width:200px;"><label>Od</label><input type="date" name="from" value="'.h($fromDate).'"></div>'.
+        '<div class="field" style="min-width:200px;"><label>Do</label><input type="date" name="to" value="'.h($toDate).'"></div>'.
         Button('Načíst', 'submit', '', '', 'primary', array()).
         '<a class="btn" href="index.php?p=rides&date='.h($selectedDate).'">Otevřít jízdní řád</a>'.
         '<a class="btn" href="index.php?p=print_schedule&date='.h($selectedDate).'" target="_blank">Tisk jízdního řádu</a>'.
+        '<a class="btn" href="index.php?p=print_summary_range&from='.h($fromDate).'&to='.h($toDate).'" target="_blank">Tisk souhrnu období</a>'.
       '</div>'.
     '</form>'.
     Separator().
