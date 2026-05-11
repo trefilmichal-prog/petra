@@ -4,8 +4,32 @@ require_once __DIR__ . '/../lib/bootstrap.php';
 require_login();
 $pdo = db();
 
-$from = isset($_GET['from']) && validate_date($_GET['from']) ? $_GET['from'] : date('Y-m-01');
-$to = isset($_GET['to']) && validate_date($_GET['to']) ? $_GET['to'] : date('Y-m-d');
+function normalize_summary_range_date($value, $bound) {
+    $v = trim((string)$value);
+
+    // Podpora ročního vstupu kvůli scénářům typu „souhrn za období 2025–2026“.
+    if ((bool)preg_match('/^\d{4}$/', $v)) {
+        return $bound === 'from' ? $v.'-01-01' : $v.'-12-31';
+    }
+
+    if (validate_date($v)) {
+        return $v;
+    }
+
+    return null;
+}
+
+$rawFrom = isset($_GET['from']) ? (string)$_GET['from'] : date('Y-m-01');
+$rawTo = isset($_GET['to']) ? (string)$_GET['to'] : date('Y-m-d');
+
+$from = normalize_summary_range_date($rawFrom, 'from');
+$to = normalize_summary_range_date($rawTo, 'to');
+
+if ($from === null || $to === null) {
+    flash_set('error', 'Neplatný formát data. Použijte YYYY-MM-DD nebo YYYY.');
+    header('Location: index.php?p=summaries&from='.urlencode($rawFrom).'&to='.urlencode($rawTo));
+    exit;
+}
 
 $company = settings_get('company_name', 'Jízdní řád');
 $footer = settings_get('print_footer', '');
