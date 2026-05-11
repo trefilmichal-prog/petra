@@ -46,7 +46,7 @@ $content .= '<div class="grid">'.
     '<div class="lv-title" style="font-size:16px;">Souhrn období</div>'.
     '<div class="text-display">Souhrn tržeb a jízd podle klienta za vybrané období.</div>'.
     Separator().
-    '<form method="get" action="index.php" class="print-hide" onsubmit="var from=this.from.value;var to=this.to.value;if(from && to && from > to){alert(\'Datum Od nesmí být později než Do.\');return false;}return true;">'.
+    '<form method="get" action="index.php" class="print-hide" onsubmit="var fromField=this.elements[\'from\'];var toField=this.elements[\'to\'];var from=fromField?fromField.value:\'\';var to=toField?toField.value:\'\';if(from && to && from > to){alert(\'Datum Od nesmí být později než Do.\');return false;}return true;">'.
       '<div class="action-row">'.
         '<div class="field" style="min-width:200px;"><label>Od</label><input type="date" name="from" value="'.h($from).'"></div>'.
         '<div class="field" style="min-width:200px;"><label>Do</label><input type="date" name="to" value="'.h($to).'"></div>'.
